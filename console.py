@@ -85,7 +85,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, arg):
-        """Create a new instance of BaseModel, save it to a JSON file, and print its ID."""
+        """BaseModel, save into JSON file, and print its ID."""
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
@@ -97,7 +97,7 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, arg):
-        """Show the string representation of an instance based on the class name and ID."""
+        """Instance based on the class name and ID."""
         argl = parse(arg)
         objdict = storage.all()
         if len(argl) == 0:
@@ -188,3 +188,13 @@ class HBNBCommand(cmd.Cmd):
             obj = objdict["{}.{}".format(argl[0], argl[1])]
             for k, v in eval(argl[2]).items():
                 if (k in obj.__class__.__
+                         type(obj.__class__.__dict__[k]) in {str, int, float}):
+                    valtype = type(obj.__class__.__dict__[k])
+                    obj.__dict__[k] = valtype(v)
+                else:
+                    obj.__dict__[k] = v
+        storage.save()
+
+
+if __name__ == "__main__":
+    HBNBCommand().cmdloop()
